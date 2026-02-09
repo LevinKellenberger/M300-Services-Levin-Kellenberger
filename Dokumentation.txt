@@ -1,3 +1,40 @@
+10-Toolumgebung
+
+    Git und Github
+            -git clone <>
+            -git pull
+            -git add -A
+            -git commit -m ""
+            -git push
+        -Versionsverwaltung und zentrales Repository
+        -Authetifizierung über SSH-Keys
+    
+    Virtualbox
+        -Lokaler HyperVisor
+        -Basis für Vagrant
+
+    Vagrant
+            -vagrant init ubuntu/xenial64
+            -vagrant up --provider virtualbox
+            -vagrant ssh
+            -vagrant destroy -f
+        -Automatisierte VM erstellung
+    
+    Apache
+            -sudo apt update
+            -sudo apt install apache2 -y
+        -Webserver auf ubuntu
+    
+    VsCode
+            -"files.exclude": {
+            -"**/.git": true,
+            -"**/.svn": true,
+            -"**/.hg": true,
+            -"**/.vagrant": true,
+            -"**/.DS_Store": true}
+        -Git Integration
+        -Verhindert das hochladen von VM bezogen Dateien
+
 20-Infrastruktur Fragen.md
 
     Fragen Cloud-Computing  
