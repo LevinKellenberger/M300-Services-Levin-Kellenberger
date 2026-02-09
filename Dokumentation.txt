@@ -133,4 +133,57 @@
                 -Powershell
             -Repositories
                 -Github
- 
+
+    Vagrant
+        -Zentrale Befehle
+                -vagrant init, Initialisiert Vagrantfile
+                -vagrant up, Erstellt und startet VM
+                -vagrant ssh, SSH-Zugriff auf VM
+                -vagrant status, Status der VM anzeigen
+                -vagrant port, Weitergeleitete Ports anzeigen
+                -vagrant halt, VM stoppen
+                -vagrant destroy -f, VM löschen
+
+        -Konfiguration (Vagrantfile)
+                -Vagrant.configure("2") do |config|
+                -config.vm.box = "bento/ubuntu-16.04"
+                -config.vm.hostname = "srv-web"
+                -config.vm.network :forwarded_port, guest: 80, host: 4567
+                -end
+
+        -Provisioning
+            -Automatisierte Konfiguration der VM
+            -Über Shell, Bash
+                -config.vm.provision :shell, inline: <<-SHELL
+                -sudo apt-get update
+                -sudo apt-get -y install apache2
+                -SHELL
+
+        -Provider
+            -Definiert die Plattformen
+                -config.vm.provider "virtualbox" do |vb|
+                -vb.memory = "512"
+                -end
+
+        -Workflow
+            -WM erstellen
+                -mkdir myserver
+                -cd myserver
+                -vagrant init ubuntu/xenial64
+                -vagrant up
+            -WM aktualisieren
+                -vagrant provision
+                -# oder
+                -vagrant destroy -f
+                -vagrant up
+            -VM löschen
+                -vagrant destroy -f
+        
+        -Synced Folders
+            -Gemeinsamer Ordner zwischen Host und VM
+                -config.vm.synced_folder ".", "/var/www/html"
+        
+
+
+
+
