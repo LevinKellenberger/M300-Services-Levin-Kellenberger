@@ -2,31 +2,98 @@
 
     Fragen Cloud-Computing  
         1. Was versteht man unter Cloud Computing?
-            Software die nicht auf deinem Lokalen rechner installiert sind, sondern auf einem Rechner den man über das internet ereicht.
+            -Software die nicht auf deinem Lokalen rechner installiert sind, sondern auf einem Rechner den man über das internet ereicht.
         2. Was versteht man unter Infrastructure as a Service - IaaS?
-            IaaS ist die unterste schicht im Cloudcomputing, Der Benutzer verwaltete virtuelle Maschinen grösteteils selber.
+            -IaaS ist die unterste schicht im Cloudcomputing, Der Benutzer verwaltete virtuelle Maschinen grösteteils selber.
     
     Fragen Infratsructure as Code
         1. Was ist der Unterschied zur manuellen Installation der VM
-            Es geht viel schneller, ist einfacher zu Dokumentieren (Commands). 
+            -Es geht viel schneller, ist einfacher zu Dokumentieren (Commands). 
     
     Fragen zu Vagrant
         1. Was wird mit Vagrant erzeugt?
-            Virtuelle Maschinen, z.B in Oracle virtual Box, AWS.
+            -Virtuelle Maschinen, z.B in Oracle virtual Box, AWS.
         2. Welche Aussagen Treffen zu?
             a: Vagrant ist ein HyperVisor
             b: Vagrant erzeugt virtuelle Maschinen, dabei werden mehrere HyperVisor und Cloud Umgebungen (z.B. AWS) unterstützt.
             c: Vagrant erzeugt Container
-                B ist korrekt. 
+                -B ist korrekt. 
         3. In welchen Bereich des Cloud-Computings ist Vagrant einzuordnen: IaaS, PaaS, SaaS?
-            In IaaS, es ist die unterste schicht. 
+            -In IaaS, es ist die unterste schicht. 
         4. Welche Alternativen zu Vagrant bestehen?
-            z.B Lima und Packer. 
+            -z.B Lima und Packer. 
         5. Wo Speichert Vagrant seine Konfiguration?
-            Im Vagrantfile. 
+            -Im Vagrantfile. 
         6. Was bedeutet die Fehlermeldung "A Vagrant environment or target machine is required to run this command."?
-            Die Maschine ist in einem Verzeichnis, wo kein Vagrantfile exisitert. 
+            -Die Maschine ist in einem Verzeichnis, wo kein Vagrantfile exisitert. 
         7. Bei welcher LPI Zertifizierung nützt mir das Vagrant Wissen?
-            Für diverse Zertifikate in richtung Linux DEV.
+            -Für diverse Zertifikate in richtung Linux DEV.
 
-20-Infrastruktur
+20-Infrastruktur REDME:md
+
+    Arten von Cloudcomputing
+        -IaaS (Infrastructure as a Service), Stellt die grundlegende IT-Infrastruktur wie Virtuelle Maschinen, Netzwerke und Speicher bereit, der Benutzer verwaltet selber (AWS).
+        -CaaS (Container as a Service), ermäglicht das Betreiben von Container, der Benutzer muss sich nicht um Hardware kümmern (Docker).
+        -PaaS (Platform as a Service), stellt komplette Umgebungen bereit, der Benutzer hat keine Kontrolle über Server oder Betriebsystem (Google App Engine).
+        -SaaS (Software as a Service), stellt die komplette Software bereit, der Benutzer muss sich nicht über Wartung oder Installation kümmern (Gmail). 
+    
+    Dynamic Infrastructure Platforms
+        -Virtualisierte Infrastrukturen die Seicher, Netzwerk und CPU bereitstellen.
+        -Ressourcen werden dynamische verwaltet.
+        -Bereitstellung läuft über Virtuelle Maschinen.
+        -Nutzung ist Lokal und Cloudbasiert möglich.
+        -Beispiel, Microsoft Azure.
+
+    Formen von Dynamic Infrastructure Platforms
+        -Public Cloud, externe Anbieter stellen die Infrastruktur bereit. 
+            -AWS
+            -Microsoft Azure
+            - Google Cloud
+        -Private Cloud, externe Anbieter stellen die dedezierten Ressourcen bereit. 
+            -Cloudstack
+            -Openstack
+            -VMware vCloud
+        -Lokale Virtualisierung, die Virtualisierung verwendet Ressourcen von dem Lokalen Rechner.
+            -Oracle Virtualbox
+            -Hyper V
+            -VMware Player
+        -Hyperkonvergente Systeme, vereinigt CPU, Storage und Netzwerk in einer Hardwarelösung. 
+
+    Voraussetzungen für Infrastructure as Code
+        -Programmierbarkeit
+            -Zugriff auf Ressourcen über API's notwendig.
+        -On-demand
+            -Ressourcen müssen schnell verfügbar sein.
+        -Self-Service
+            -Benutzer können Ressourcen selbst verwalten.
+        -Portabilität
+            -Plattformen sollen schnell austauschbar sein.
+        -Sicherheit
+            -Unterstützung von Sicherheitsstandards und Zertifikaten.
+        
+    Infrastructure as Code
+        -It-Infrastruktur wird Virtualisiert.
+        -Bereitstellung und Konfiguration wird automatisiert.
+        -Einsatzt bewährt DevOps-Methoden
+            -Versionsverwaltung
+            -Continous Integration
+            -Continous Delivery
+            -Testautomatisierungen
+        -Technische Ziele von IaC
+           -Schnelle Änderungen am System
+           -Wiederholbare Deployments
+           -Schnelle Wiederherstellung
+           -Automatisierung vom manuellen Prozessen
+        -Zentrale Tools
+            -Infrastructure Provisioning
+                -Openstack
+                -CloudFormation
+            -Configuration und Images
+                -Vagrant
+                -Docker
+            -Scripting
+                -Bash
+                -Powershell
+            -Repositories
+                -Github
+ 
