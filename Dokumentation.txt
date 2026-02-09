@@ -1,4 +1,4 @@
-20-Infrastruktur
+20-Infrastruktur Fragen.md
 
     Fragen Cloud-Computing  
         1. Was versteht man unter Cloud Computing?
@@ -8,7 +8,7 @@
     
     Fragen Infratsructure as Code
         1. Was ist der Unterschied zur manuellen Installation der VM
-            Es geht viel schneller, ist einfacher zu Dokuemntieren (Commands). 
+            Es geht viel schneller, ist einfacher zu Dokumentieren (Commands). 
     
     Fragen zu Vagrant
         1. Was wird mit Vagrant erzeugt?
@@ -28,3 +28,5 @@
             Die Maschine ist in einem Verzeichnis, wo kein Vagrantfile exisitert. 
         7. Bei welcher LPI Zertifizierung nützt mir das Vagrant Wissen?
             Für diverse Zertifikate in richtung Linux DEV.
+
+20-Infrastruktur
