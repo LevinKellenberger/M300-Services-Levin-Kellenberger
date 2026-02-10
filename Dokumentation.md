@@ -24,7 +24,7 @@
             -sudo apt update
             -sudo apt install apache2 -y
         -Webserver auf ubuntu
-![Apache](Apache.png)
+![Apache](10-Apache.png)
     
     VsCode
             -"files.exclude": {
@@ -67,7 +67,7 @@
         7. Bei welcher LPI Zertifizierung nützt mir das Vagrant Wissen?
             -Für diverse Zertifikate in richtung Linux DEV.
 
-20-Infrastruktur REDME:md
+20-Infrastruktur REDME.md
 
     Arten von Cloudcomputing
         -IaaS (Infrastructure as a Service), Stellt die grundlegende IT-Infrastruktur wie Virtuelle Maschinen, Netzwerke und Speicher bereit, der Benutzer verwaltet selber (AWS).
@@ -198,4 +198,33 @@
             -Benutzer können Ressourcen selbst verwalten.
             -Plattformen sollen schnell austauschbar sein.
             -Unterstützung von Sicherheitsstandards und Zertifikaten.
+
+20 LB2.md
+
+    -Neue VM Erstellen
+        -Im Git-Bash mit folgenden Befehlen das neue Verzeichnis erstellen und dahin wechseln.
+            -cd myM300/
+            -mkdir myVM
+            -cd myVM
+![Verzeichnis](20-LB2-Verzeichnis.png)
+
+        -Im Git-Bash mit folgenden Befehlen die VM erstellen und starten.
+            -vagrant init ubuntu/xenial64
+            -vagrant up
+![Vagrant-UP](20-LB2-Vagrant-UP.png)
+
+        -Mit dem Befehl "vagrant ssh" kann man sich über Git-Bash mit der VM verbinden.
+![Vagrant-ssh](20-LB2-Vagrant-ssh.png)
+
+    -Serverdienste auswählen
+        -Bevor man den Apache Server und den Webalizer installieren kann, sollte man die VM updaten dazu "sudo     apt-get update"
+        -Danach mit dem Befehl "sudo apt-get install -y apache2" apache2 installieren.
+![Apache-Installation](20-LB2-Apache.png)
+
+        -Anschliessend den Webalizer per befehl installieren
+            -sudo apt-get install -y webalizer
+![Webalizer-Installation](20-LB2-Webalizer.png)
+
+        -Mit dem befehl "History" erscheinen alle zuvor eineggeben commands.
+![History](20-LB2-History.png)
 
