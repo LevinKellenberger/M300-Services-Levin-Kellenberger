@@ -203,14 +203,14 @@
 
     -Neue VM Erstellen
         -Im Git-Bash mit folgenden Befehlen das neue Verzeichnis erstellen und dahin wechseln.
-            -cd myM300/
-            -mkdir myVM
-            -cd myVM
+            -"cd myM300/"
+            -"mkdir myVM"
+            -"cd myVM"
 ![Verzeichnis](20-LB2-Verzeichnis.png)
 
         -Im Git-Bash mit folgenden Befehlen die VM erstellen und starten.
-            -vagrant init ubuntu/xenial64
-            -vagrant up
+            -"vagrant init ubuntu/xenial64"
+            -"vagrant up"
 ![Vagrant-UP](20-LB2-Vagrant-UP.png)
 
         -Mit dem Befehl "vagrant ssh" kann man sich über Git-Bash mit der VM verbinden.
@@ -222,9 +222,28 @@
 ![Apache-Installation](20-LB2-Apache.png)
 
         -Anschliessend den Webalizer per befehl installieren
-            -sudo apt-get install -y webalizer
+            -"sudo apt-get install -y webalizer"
 ![Webalizer-Installation](20-LB2-Webalizer.png)
 
         -Mit dem befehl "History" erscheinen alle zuvor eineggeben commands.
 ![History](20-LB2-History.png)
 
+
+    -Feintuning
+        -Per befehl testen, welche ports von der VM weitergeleitet werden.
+            -"vagrant port"
+![Vagrant-Port](20-LB2-Vagrant-Port.png)
+        -Man sieht das aktuell nur der SSH-Port (22) weitergeleitet wird, es fehlt noch Port 80 für Apache-Server.
+
+        -Um die Portweiterleitung auf Port 80 zu erstellen, muss man das Vagrantfile bearbeiten, dass kan man per folgendem befehl öffnen.
+            -"code Vagrantfile"
+![Portweiterleitung](20-LB2-Portweiterleitung.png)
+
+        -Danach die VM mit folgenden Commands neustarten und neu laden.
+            -vagrant reload
+            -vagrant provision
+![Vagrant-Reload](20-LB2-Vagrant-Reload.png)
+
+        -Testen ob Port 80 nun weitergeleitet wird.
+            -Vagrant Port
+![Vagrant-Port-Updated](20-LB2-Vagrant-Port-Updated.png)
