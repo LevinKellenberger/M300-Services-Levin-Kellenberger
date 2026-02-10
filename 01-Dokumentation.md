@@ -67,7 +67,7 @@
         7. Bei welcher LPI Zertifizierung nützt mir das Vagrant Wissen?
             -Für diverse Zertifikate in richtung Linux DEV.
 
-20-Infrastruktur REDME.md
+20-Infrastruktur README.md
 
     Arten von Cloudcomputing
         -IaaS (Infrastructure as a Service), Stellt die grundlegende IT-Infrastruktur wie Virtuelle Maschinen, Netzwerke und Speicher bereit, der Benutzer verwaltet selber (AWS).
@@ -247,3 +247,29 @@
         -Testen ob Port 80 nun weitergeleitet wird.
             -Vagrant Port
 ![Vagrant-Port-Updated](20-LB2-Vagrant-Port-Updated.png)
+
+
+25-Sicherheit Fragen.md
+
+    -Firewall und Reverse Proxy
+
+        -Was ist der Unterschied zwischen einem Web Server und einen Reverse Proxy?
+            -Ein Web-Server hat direkt HTML-Seiten, ein Reverse-Proxy dient als stellvertreter.
+        -Was verstehen wir unter einer "White List"?
+            -Die Liste an Vertrauenswürdigen Objekten, z.B Server
+        -Was wäre die Alternative zum Absichern der einzelnen Server mit einer Firewall?
+            -Eine zentrale Firewall für das ganze Netz.
+
+    -SSH
+
+        -Was ist der Unterschied zwischen der id_rsa und id_rsa.pub Datei?
+            -Private und Public Key
+        -Wo darf ein SSH Tunnel nicht angewendet werden?
+            -Im geschäftlichen Bereich
+        -Für was dient die Datei authorized_keys?
+            -Beinhaltet die Keys von allen die sich ohne passwort anmelden dürfen.
+        -Für was dient die Datei known_hosts?
+            -Listet alle Hosts auf, wo ich schnonmal angemeldet war.
+
+
+25-Sicherheit README.md
