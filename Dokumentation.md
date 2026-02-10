@@ -184,7 +184,18 @@
             -Gemeinsamer Ordner zwischen Host und VM
                 -config.vm.synced_folder ".", "/var/www/html"
         
+    Reflexion
+        -Cloud Computing
+            -Ausführung von Anwendungen auf entfernten, netzwerkbasierten Systemen.
+            -Systeme sind nicht an Lokale hardware gebunden.
+            -Dynamic Infrastructure Platforms stellen Netzwerk, Speicher und CPU bereit.
+            -Ressourcen werden automatisch verwaltet.
+            -Bereitstellung über Virtuelle Maschinen.
 
-
-
+        -Vorrausetzung für Infrastrucutre as Code
+            -Zugriff auf Ressourcen über API's notwendig.
+            -Ressourcen müssen schnell verfügbar sein.
+            -Benutzer können Ressourcen selbst verwalten.
+            -Plattformen sollen schnell austauschbar sein.
+            -Unterstützung von Sicherheitsstandards und Zertifikaten.
 
