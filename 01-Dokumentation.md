@@ -247,6 +247,8 @@
         -Testen ob Port 80 nun weitergeleitet wird.
             -Vagrant Port
 ![Vagrant-Port-Updated](20-LB2-Vagrant-Port-Updated.png)
+        -Website aufrufen über "http://localhost:8080/webalizer"
+![Webalizer-Site](20-LB2-Webalizer-Site.png)
 
 
 25-Sicherheit Fragen.md
@@ -273,3 +275,34 @@
 
 
 25-Sicherheit README.md
+
+    -UFW Firewall Installation
+
+        -Mit folgendem Command die Firewall installieren
+            - "sudo apt-get install ufw"
+        -UFW starten mit folgenden Befehlen
+            -"sudo ufw enable"
+        -Status überprüfen mit
+            -"sudo ufw status"
+![UFW](25-README-UFW-Enable.png)
+
+    -Firewall-Regeln
+
+        -Firewallregeln für folgende Ports aktivieren.
+           - sudo ufw allow 80/tcp
+           - sudo ufw allow ssh
+![Firewallregeln](25-README-Rules.png)
+
+
+    -Reverse Proxy
+
+        -Folgende Commands ausführen
+            -sudo apt-get install libapache2-mod-proxy-html
+            -sudo apt-get install libxml2-dev
+
+        -Apache Module installieren
+            -sudo a2enmod proxy
+            -sudo a2enmod proxy_html
+            -sudo a2enmod proxy_http 
+        -Danach den Apache Service neustarten
+            -service apache2 restart
