@@ -3,11 +3,11 @@
 ## Git und Github
 
 ```bash
-            -git clone <>
-            -git pull
-            -git add -A
-            -git commit -m ""
-            -git push
+git clone <>
+git pull
+git add -A
+git commit -m ""
+git push
 ```
 - Versionsverwaltung und zentrales Repository
 - Authetifizierung über SSH-Keys
