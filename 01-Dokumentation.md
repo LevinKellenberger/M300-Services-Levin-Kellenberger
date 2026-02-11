@@ -478,3 +478,88 @@ sudo a2enmod proxy_http
 ```bash
 service apache2 restart
 ```
+
+---
+
+# 30-Container Fragen.md
+
+## Container
+
+### Was ist der Unterschied zwischen Vagrant und Docker?
+- Vagrant ist für IaaS und Docker für PaaS
+
+### Welches Tools aus dem Docker Universum ist Vergleichbar mit Vagrant?
+- docker machine
+
+### Was macht der Docker Provisioner von Vagrant?
+-   Installiert Docker in einer Virtuellen Maschine
+
+### Welche Linux Kernel Funktionalität verwenden Container?
+- Linux Namespaces
+
+### Welches Architekturmuster verwendet der Entwickler wenn er Container einsetzt?
+- Microservices
+
+### Welches sind die drei Hauptmerkmale (abgeleitet vom Ur-Unix) von Microservices?
+- Ein Porgramm soll nur eine Aufgabe haben.
+- Programme sollen zusammen arbeiten können.
+- Sollen eine Universielle schnistelle haben.
+
+---
+
+## Docker
+
+### Was ist der Unterschied zwischen einem Docker Image und einem Container?
+-   Image = gebuildet, Container Image = aktuelle Änderungen im Filesystem
+
+### Was ist der Unterschied zwischen einer Virtuellen Maschine und einem Docker Container?
+- Docker ist nur der Prozess, z.B Web-Server, VM hat noch das OS.
+  
+### Wie bekomme ich Informationen zu einem laufenden Docker Container?
+-Mit docker-logs, docker inspect
+
+### Was ist der Unterschied zwischen einer Docker Registry und einem Repository
+- Im Registry werden die Images gespeichert und im Repository die verschieden Versionen vom Image
+
+### Wie erstelle ich ein Container Image
+- docker build
+
+### In welcher Datei steht welche Inhalte sich im Container Image befinden?
+- Dockerfile
+
+### Der erste Prozess im Container bekommt die Nummer?
+- 1
+  
+### Welche Teile von Docker sind durch Kubernetes obsolet geworden, bzw. sollten nicht mehr verwendet werden?
+- Swarm, Compose, Network und Volumes
+
+### Welche Aussage ist besser
+
+#### A: Dockerfile sollten möglichst das Builden (CI) und Ausführen von Services beinhalten, so ist alles an einem Ort und der Entwickler kann alles erledigen.
+
+#### B: Das Builden und Ausführen von Services ist strikt zu trennen. Damit saubere und nachvollziehbare Services mittels CI/CD Prozess entstehen.
+- Aussage B
+
+---
+
+## Docker Hub
+
+### Was ist Docker Hub?
+- Ein Container Registry, wo Images gespeichert werden
+
+### Welches sind die Alternativen?
+- Fast jeder Cloud-Anbieter stellt ein Container Registry zu verfügung
+
+### Warum sollte eine eigene Docker Registry im Unternehmen verwendet werden?
+- Sicherheit, alle Images sind zentral übereacht, gleiche Quelle
+
+### Warum sollten Versionen tag von Images immer angegeben werden?
+- Ansonsten wird immer nur das neuste verwendet, egal welche Version es hat. 
+
+### Was ist der Unterschied zwischen docker save/docker load und docker export/docker import?
+- save/load ist für Image, export/import für Container
+
+---
+
+# 30-Container README.md
+
