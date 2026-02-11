@@ -853,3 +853,107 @@ docker push SERVER:5000/myubuntu
 docker pull SERVER:5000/myubuntu
 ```
 
+---
+
+# 30-LB3
+
+## Server erstellen
+
+- Verzeichnis erstellen
+```bash
+cd M300/docker
+vagrant init ubuntu/xenial64
+vagrant up
+vagrant ssh
+docker run hello-world
+```
+![Docker-Verzeichnis](Images/30-LB3-Docker-Verzeichnis.png)
+
+- Docker file anpassen
+
+```bash
+code vagrantfile
+```
+- Inhalt ersetzten durch
+
+```bash
+Vagrant.configure(2) do |config|
+  config.vm.box = "ubuntu/xenial64"
+  config.vm.network "forwarded_port", guest:80, host:8080, auto_correct: true
+  config.vm.synced_folder ".", "/var/www/html"  
+config.vm.provider "virtualbox" do |vb|
+  vb.memory = "512"  
+end
+config.vm.provision "shell", inline: <<-SHELL
+  sudo apt-get update
+  sudo apt-get -y install apache2 
+SHELL
+end
+```
+- Per SSH verbinden
+
+```bash
+vagrant ssh
+```
+
+---
+
+## Docker installieren
+
+- Updates und Docker installieren
+
+```bash
+sudo apt-get update
+sudo apt-get -y install docker.io
+sudo systemctl enable --now docker
+```
+- Dokcer Status überprüfen
+
+```bash
+sudo systemctl status docker
+```
+![Docker-Status](Images/30-LB3-Docker-Status.png)
+
+---
+
+## Dockerfile erstellen
+
+- Auf dem Vagrant Server das Dockerfile erstellen
+
+```bash
+nano Dockerfile
+```
+
+- Folgenden inhalt einfügen
+
+```bash
+FROM ubuntu:14.04
+RUN apt-get update
+RUN apt-get -q -y install apache2 
+# Konfiguration Apache
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_LOG_DIR /var/log/apache2
+RUN mkdir -p /var/lock/apache2 /var/run/apache2
+EXPOSE 80
+VOLUME /var/www/html
+CMD /bin/bash -c "source /etc/apache2/envvars && exec /usr/sbin/apache2 -DFOREGROUND"
+```
+
+### Image bauen
+
+```bash
+docker build -t my-apache .
+```
+
+### Container starten
+
+```bash
+docker run -d --name apache1 -p 80:80 my-apache
+```
+![Docker-Run](Images/30-LB3-Docker-Run.png)
+
+
+### Zugriff Testen
+- Im Browser "http://localhost:8080"
+![Docker-Test](Images/30-LB3-Docker-Test.png)
