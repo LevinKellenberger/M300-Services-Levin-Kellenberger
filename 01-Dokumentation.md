@@ -256,7 +256,7 @@ end
                 -vagrant up
 ```
 
-- WM aktualisieren
+- VM aktualisieren
 
 ```bash
 vagrant provision
