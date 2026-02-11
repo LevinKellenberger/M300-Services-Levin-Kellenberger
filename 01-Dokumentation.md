@@ -551,7 +551,7 @@ service apache2 restart
 - Fast jeder Cloud-Anbieter stellt ein Container Registry zu verfügung
 
 ### Warum sollte eine eigene Docker Registry im Unternehmen verwendet werden?
-- Sicherheit, alle Images sind zentral übereacht, gleiche Quelle
+- Sicherheit, alle Images sind zentral überewacht, gleiche Quelle
 
 ### Warum sollten Versionen tag von Images immer angegeben werden?
 - Ansonsten wird immer nur das neuste verwendet, egal welche Version es hat. 
@@ -562,4 +562,294 @@ service apache2 restart
 ---
 
 # 30-Container README.md
+
+## Container
+
+### Grundlagen
+- Isolation vom Hostsystem
+- Nutzung des Host-Kernels (kein OS)
+- Überall gleiche Laufumgebung
+
+### Merkmale
+- Gemeinsame Ressourcennutzung
+- Schneller Start/Stop (flexibel)
+- Geringer Ressourcenverbrauch
+- Viele Container parallel möglich
+
+### Microservices und Container
+- Architektur aus kleinen, unabhängigen Services
+- Kommunikation über das Netzwerk
+- Ressourcen pro Service skalierbar
+
+---
+
+## Docker
+
+### Grundlagen
+- Basiert auf Linux-Containertechnologie
+- Portable Images
+- Vereinheitlicht erstellen, Verteilen und Ausführen
+
+### Plattform-Komponente 
+
+#### Docker-Engine
+- Erstellt und startet Container
+- Besteht aus Docker Daemon und API
+
+#### Docker-HUB
+- Zentrales Registry
+- Speichern und Verteilen des Images
+
+### Architektur
+
+#### Docker-Daemon
+- Erstellt, überwacht Container
+- Speichert Images
+- Läuft als Dienst auf Host
+  
+#### Docker-Client
+- CLI-Steurung von Docker
+- Kommunikation mit Daemon via HTTP-REST
+- Ermöglicht Remote-Verbindung
+
+### Images
+- Unveränderliche Vorlage für Container
+- Versioniert durch Tags
+- Für änderungen, muss ein neues Image erstellt werden
+
+### Container
+- Instanz eines Images
+- Mehrere Container pro Image möglich
+
+### Docker Registry
+- Speicherort für Images
+- Docker HUB
+
+---
+
+## Zentrale Docker Befehle
+
+### Container Starten
+
+```bash
+docker run web
+docker run -it ubuntu /bin/bash
+docker run -d ubuntu sleep 20
+docker run -d --rm ubuntu sleep 20
+```
+
+### Container anzeigen
+
+```bash
+docker ps
+docker ps -a
+docker ps -a -q
+```
+
+### Images anzeigen
+
+```bash
+docker image
+docker image ls
+```
+
+### Container löschen
+
+```bash
+docker rm web
+docker rm $(docker ps -a -q)
+docker rm -f $(docker ps -a -q)
+```
+
+### Image löschen
+
+```bash
+docker rmi ubuntu
+docker rmi $(docker images -q -f dangling=true)
+```
+
+### Container Starten/Stoppen
+
+```bash
+docker start >id>
+docker stop <id>
+docker kill <id>
+```
+
+### Container-Informationen
+
+```bash
+docker logs <id>
+docker inspect <id>
+docker diff <id>
+docker top <id>
+```
+
+---
+
+## Dockerfile
+
+### Grundlagen
+- Textdatei mit Build-Anweisungen für Docker-Images
+- Wird mit docker-build gemacht
+
+### Image bauen und starten
+
+```bash
+docker build -t mysql .
+docker run --rm -d --name mysql mysql
+docker exec -it mysql bash
+```
+
+### Überprüfen im Container
+
+```bash
+ps -ef
+netstat -tulpen
+```
+
+---
+
+## Konzepte
+
+### Build Context
+- Verzeichnis mit Datein und Dockerfile
+- Wird bei docker-build übergeben
+- Dateien werden mit COPY oder ADD hinzugefügt
+
+### Imageschichten
+- Jede Anweisung vom Dockerfile erzeugt eine neue Schicht
+- Layer sind unveränderlich
+- Änderunge erzeugen ein neues Image
+
+---
+
+## Dockerfile-Anweisungen
+
+### Basis
+- FROM-Image definieren
+- MAINTAINER-Autor setzten
+
+### Datein und Verzeichnis
+- ADD-Dateien ins Image kopieren
+- COPY-Datein aus Image-Context kopieren
+- WORKDIR-Arbeitsverzeichnis erstellen
+- VOLUME-Ein Volume definieren
+
+### Prozess
+- RUN-Befehl ausführen
+- CMD-Befehl bei Containerstart
+- ENTRYPOINT-Prozess beu Containerstart
+- SHELL-Shell definieren
+- USER-Benutzer festlegen
+
+### Netzwerk
+- EXPOSE-Port deklarieren
+- ENV-Variable setzen
+- HEALTHCHECH-Status üerprüfen
+
+---
+
+## Image-Bereitstellung
+
+### Grundlagen
+- Eigene Images verteilen
+#### Bereitstellung über
+- Docker HUB
+```bash
+docker pull
+docker load
+```
+
+### Namensgebung und Tags
+- Format: Repository:tag
+- Beispiel: Ubuntu:0.8.2
+- Ohne tag=latest
+
+### Image taggen
+
+```bash
+docker build -t mysql .
+docker build -t mysql:1.0 .
+docker tag mysql username/mysql
+```
+
+### Docker-HUB
+- Offizielles Registry von Docker
+- Öfentliches und Privates Repository möglich
+
+#### Image hochladen
+
+```bash
+docker tag mysql username/mysql
+docker push username/mysql
+```
+
+#### Image suchen und herunterladen
+
+```bash
+docker search mysql
+docker pull ubuntu
+```
+
+---
+
+## Export/Import ohne Registry
+
+### Container exportieren
+
+```bash
+docker export containername -o container.tar
+docker import container.tar neuesimage
+```
+
+### Images sichern und laden
+
+```bash
+docker save mysql -o mysql.tar
+docker load -i mysql.tar
+```
+
+---
+
+## Privates Registry
+
+### Registry starten
+
+```bash
+sudo docker pull registry:2
+
+sudo docker run -d -p 5000:5000 --restart=always \
+  --name registry \
+  -v /var/spool/docker-registry:/var/lib/registry \
+  registry:2
+```
+
+### Docker-Client konfigurieren
+
+#### Datei erstellen
+
+```bash
+/etc/docker/daemon.json
+```
+
+#### Inhalt
+
+```bash
+"insecure-registries":"SERVER:5000"
+```
+
+#### Docker neustarten
+
+```bash
+sudo systemctl restart docker
+```
+
+### Image auf privates Registry pushen
+
+```bash
+docker tag ubuntu SERVER:5000/myubuntu
+docker push SERVER:5000/myubuntu
+docker pull SERVER:5000/myubuntu
+```
 
