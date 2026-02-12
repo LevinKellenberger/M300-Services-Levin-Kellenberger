@@ -997,4 +997,4 @@ docker run -d --name apache1 -p 80:80 my-apache
 - Zeitfenster für CPU-Zuteilung
 
 ##### cpu-quota
-- 
+- Maximale CPU-Zeit in einer Periode
