@@ -998,3 +998,42 @@ docker run -d --name apache1 -p 80:80 my-apache
 
 ##### cpu-quota
 - Maximale CPU-Zeit in einer Periode
+
+#### Docker-Optionen
+
+```bash
+--cpus="X"
+```
+
+- CPU-Limit
+
+```bash
+--cpu-shares
+```
+- Relative Priorität
+- Kein hartes Limit
+
+
+#### Verhalten
+
+```bash
+--cpus
+```
+- Hartes Limit, nur bis zu diesem Wert
+
+```bash
+--cpu-sahres
+```
+
+- Arbeitet mit Gewichtung, kein hartes Limit
+
+## Kontinuierliche Integration
+
+### Welche Funktionen kann Jenkins übernehmen?
+- Modultests, Software bauen, Batch Jobs ausführen (logs prüfen)
+
+### Wie baut man Modultests
+- Mit bash-Scripts
+
+### Wie anders, als Manuell oder Zeitgesteuert könnten Jenkins Jobs auch gestartet werden?
+- Durch Änderungen in einem GIT-Repository
