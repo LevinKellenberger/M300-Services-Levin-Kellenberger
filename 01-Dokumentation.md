@@ -250,10 +250,10 @@ end
 - WM erstellen
 
 ```bash
-                -mkdir myserver
-                -cd myserver
-                -vagrant init ubuntu/xenial64
-                -vagrant up
+mkdir myserver
+cd myserver
+vagrant init ubuntu/xenial64
+vagrant up
 ```
 
 - VM aktualisieren
@@ -955,5 +955,46 @@ docker run -d --name apache1 -p 80:80 my-apache
 
 
 ### Zugriff Testen
-- Im Browser "http://localhost:8080"
+#### Im Browser "http://localhost:8080"
 ![Docker-Test](Images/30-LB3-Docker-Test.png)
+
+### Probleme
+
+#### Dockerfile lokal auf dem Host erstellt
+- Das kann funktionieren, bei mit konnte die VM das File nie finden, deshalb habe ich es auf der VM erstellt um das Problem zu lösen
+
+---
+
+# 35-Sicherheit Fragen.md
+
+## Protokollieren und Überwachen
+
+### Warum sollten Container überwacht werden?
+- Um fehlerhafte Container oder Container mit grosser Belastung frühzeitig zu erkennen.
+
+### Was ist das syslog und wo ist es zu finden?
+- Die Systemlogs eines Linux-Hosts.
+
+### Was ist stdout, stderr, stdin?
+- Standard Output, Standard Error Output und standard Inpout Eingabe
+
+## Container sichern und beschränken
+
+### Wie kann docker run -v /:/homeroot -it ubuntu bash durch Normale User verhindert werden?
+- Nur der root-Benutzer darf Container starten
+
+### Wie können verschiedene Mandanten getrennt werden?
+- Mit mehreren Virtuellen Maschinen
+
+### Wie kann der Ressourcenverbrauch von Containern eingeschränkt werden?
+- Docker nutzt den Linux Completely Fair Scheduler (CFS)
+- Steuert und begrenzt CPU-Nutzung von Containern
+
+#### Konzept
+
+##### cpu-period
+- Standard 100 ms
+- Zeitfenster für CPU-Zuteilung
+
+##### cpu-quota
+- 
