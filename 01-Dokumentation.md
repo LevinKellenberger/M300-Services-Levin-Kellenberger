@@ -918,13 +918,13 @@ sudo systemctl status docker
 
 ## Dockerfile erstellen
 
-- Auf dem Vagrant Server das Dockerfile erstellen
+- Auf dem Vagrant Server das Dockerfile erstellen.
 
 ```bash
 nano Dockerfile
 ```
 
-- Folgenden inhalt einfügen
+- Folgenden inhalt einfügen.
 
 ```bash
 FROM ubuntu:14.04
@@ -961,7 +961,7 @@ docker run -d --name apache1 -p 80:80 my-apache
 ### Probleme
 
 #### Dockerfile lokal auf dem Host erstellt
-- Das kann funktionieren, bei mit konnte die VM das File nie finden, deshalb habe ich es auf der VM erstellt um das Problem zu lösen
+- Das kann funktionieren, bei mit konnte die VM das File nie finden, deshalb habe ich es auf der VM erstellt um das Problem zu lösen.
 
 ---
 
@@ -976,28 +976,28 @@ docker run -d --name apache1 -p 80:80 my-apache
 - Die Systemlogs eines Linux-Hosts.
 
 ### Was ist stdout, stderr, stdin?
-- Standard Output, Standard Error Output und standard Inpout Eingabe
+- Standard Output, Standard Error Output und standard Inpout Eingabe.
 
 ## Container sichern und beschränken
 
 ### Wie kann docker run -v /:/homeroot -it ubuntu bash durch Normale User verhindert werden?
-- Nur der root-Benutzer darf Container starten
+- Nur der root-Benutzer darf Container starten.
 
 ### Wie können verschiedene Mandanten getrennt werden?
-- Mit mehreren Virtuellen Maschinen
+- Mit mehreren Virtuellen Maschinen.
 
 ### Wie kann der Ressourcenverbrauch von Containern eingeschränkt werden?
-- Docker nutzt den Linux Completely Fair Scheduler (CFS)
-- Steuert und begrenzt CPU-Nutzung von Containern
+- Docker nutzt den Linux Completely Fair Scheduler (CFS).
+- Steuert und begrenzt CPU-Nutzung von Containern.
 
 #### Konzept
 
 ##### cpu-period
 - Standard 100 ms
-- Zeitfenster für CPU-Zuteilung
+- Zeitfenster für CPU-Zuteilung.
 
 ##### cpu-quota
-- Maximale CPU-Zeit in einer Periode
+- Maximale CPU-Zeit in einer Periode.
 
 #### Docker-Optionen
 
@@ -1010,8 +1010,8 @@ docker run -d --name apache1 -p 80:80 my-apache
 ```bash
 --cpu-shares
 ```
-- Relative Priorität
-- Kein hartes Limit
+- Relative Priorität.
+- Kein hartes Limit.
 
 
 #### Verhalten
@@ -1019,21 +1019,21 @@ docker run -d --name apache1 -p 80:80 my-apache
 ```bash
 --cpus
 ```
-- Hartes Limit, nur bis zu diesem Wert
+- Hartes Limit, nur bis zu diesem Wert.
 
 ```bash
 --cpu-sahres
 ```
 
-- Arbeitet mit Gewichtung, kein hartes Limit
+- Arbeitet mit Gewichtung, kein hartes Limit.
 
 ## Kontinuierliche Integration
 
 ### Welche Funktionen kann Jenkins übernehmen?
-- Modultests, Software bauen, Batch Jobs ausführen (logs prüfen)
+- Modultests, Software bauen, Batch Jobs ausführen (logs prüfen).
 
 ### Wie baut man Modultests
-- Mit bash-Scripts
+- Mit bash-Scripts.
 
 ### Wie anders, als Manuell oder Zeitgesteuert könnten Jenkins Jobs auch gestartet werden?
-- Durch Änderungen in einem GIT-Repository
+- Durch Änderungen in einem GIT-Repository.
