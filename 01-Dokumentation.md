@@ -450,8 +450,11 @@ sudo ufw status
 ## Firewall-Regeln
 
 ### Firewallregeln für folgende Ports aktivieren.
-- sudo ufw allow 80/tcp
-- sudo ufw allow ssh
+
+```bash
+sudo ufw allow 80/tcp
+sudo ufw allow ssh
+```
 ![Firewallregeln](Images/25-README-Rules.png)
 
 ---
