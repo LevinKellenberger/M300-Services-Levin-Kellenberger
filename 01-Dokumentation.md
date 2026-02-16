@@ -192,11 +192,11 @@ sudo apt install apache2 -y
 
 ---
 
-# Vagrant
+## Vagrant
 
 ---
 
-## Zentrale Befehle
+### Zentrale Befehle
 
 ```bash
 vagrant init, Initialisiert Vagrantfile
@@ -210,7 +210,7 @@ vagrant destroy -f, VM löschen
 
 ---
 
-## Konfiguration (Vagrantfile)
+### Konfiguration (Vagrantfile)
 
 ```bash
 Vagrant.configure("2") do |config|
@@ -222,7 +222,7 @@ end
 
 ---
 
-## Provisioning
+### Provisioning
 - Automatisierte Konfiguration der VM
 -  Über Shell, Bash
 
@@ -235,7 +235,7 @@ SHELL
 
 ---
 
-## Provider
+### Provider
 - Definiert die Plattformen
   
 ```bash
@@ -246,7 +246,7 @@ end
 
 ---
 
-## Workflow
+### Workflow
 - WM erstellen
 
 ```bash
@@ -273,7 +273,7 @@ vagrant destroy -f
 
 ---
 
-## Synced Folders
+### Synced Folders
 - Gemeinsamer Ordner zwischen Host und VM
 
 ```bash
@@ -282,16 +282,16 @@ config.vm.synced_folder ".", "/var/www/html"
 
 ---
 
-## Reflexion
+### Reflexion
 
-### Cloud Computing
+#### Cloud Computing
 - Ausführung von Anwendungen auf entfernten, netzwerkbasierten Systemen.
 - Systeme sind nicht an Lokale hardware gebunden.
 - Dynamic Infrastructure Platforms stellen Netzwerk, Speicher und CPU bereit.
 - Ressourcen werden automatisch verwaltet.
 - Bereitstellung über Virtuelle Maschinen.
 
-### Vorrausetzung für Infrastrucutre as Code
+#### Vorrausetzung für Infrastrucutre as Code
 - Zugriff auf Ressourcen über API's notwendig.
 - Ressourcen müssen schnell verfügbar sein.
 - Benutzer können Ressourcen selbst verwalten.
@@ -1040,4 +1040,4 @@ docker run -d --name apache1 -p 80:80 my-apache
 
 ### Wie anders, als Manuell oder Zeitgesteuert könnten Jenkins Jobs auch gestartet werden?
 - Durch Änderungen in einem GIT-Repository.
-
+ 
