@@ -1041,3 +1041,223 @@ docker run -d --name apache1 -p 80:80 my-apache
 ### Wie anders, als Manuell oder Zeitgesteuert könnten Jenkins Jobs auch gestartet werden?
 - Durch Änderungen in einem GIT-Repository.
  
+---
+
+# 35-Sicherheit README.md
+
+## Protokollieren und Überwachen
+
+### Bedeutung von Logging und Überwachung
+- Zentral für stabile Container-Umgebungen
+- Viele Container laufen parallel
+- Hohe Komplexität
+- Zentrale Logs
+
+---
+
+## Docker Logging 
+
+### Docker protokolliert
+- STDOUT
+- STDERR
+
+### Logs abrufen mit
+
+```bash
+docker logs <container>
+```
+
+### Logging-Treiber
+- json-file
+- syslog
+- none
+
+--- 
+
+## JSON-Logging
+
+### Logs abrufen mit
+
+```bash
+docker run --name logtest ubuntu bash -c
+docker logs logtest
+docker rm logtest
+```
+
+### Live-Logs anzeigen
+
+```bash
+docker run -d --name logtest ubuntu bash -c
+docker log streamtest
+docker logs streamtest | wc -1
+docker rm streamtest
+```
+
+---
+
+## Syslog-Logging
+
+```bash
+docker run -d --log-driver=syslog ubunut bash -c
+tail -f /var/log/syslog
+```
+
+---
+
+## Monitoring 
+
+### Anforderungen an Monitoring
+
+#### Übersicht über
+- CPU
+- RAM
+- Netzwerk
+- Speicherplatz
+
+#### Früherkennung von 
+- Performance-Problemen
+- Überlast
+
+#### Alarmierung bei Fehler
+
+--- 
+
+### cAdvisor
+
+#### Monitoring-Tool von Google
+
+#### Zeigt
+- CPU-Nutzung
+- Speicherverbrauch
+- Netzwerkmetriken
+- Container-Performance
+
+#### Läuft selber als Container
+
+---
+
+### cAdvisor Starten
+
+```bash
+docker run -d \
+--name cadvisor \
+v /:/rootfs:ro \
+v /var/run:/var/run:rw \
+v /sys:/sys:ro \
+v /var/lib/docker/:/var/lib/docker:ro \
+p 8080:8080 \
+google/cadvisor:latest
+```
+
+---
+
+## Container sichern und beschränken
+
+### Sicherheitsrisiken
+
+#### Kernel Exploits
+- Container teilen Host-Kernel
+
+#### DoS-Angriffe
+- Container können Ressourcen blockieren
+
+#### Container-Breakouts
+- Root im Container = Root auf Host
+
+#### Vergiftete Images
+- Manipulierte Images
+
+---
+
+### Least Privilege
+- Container nur mit minimalen rechten betreiben
+- Kein Root benutzer
+- Nur benötigte ports öffnen
+- Ressourcen begrenzen
+
+---
+
+### Wichtige Schutzmassnahmen
+
+#### Nicht als Root laufen
+
+```bash
+RUN groupadd -r user_grp && useradd -r -g user_rp user
+USER user
+```
+
+#### Speicher begrenzen
+
+```bash
+docker run -m 128m --memory-swap 128m image
+```
+
+#### CPU begrenzen
+
+```bash
+docker run -c 512 image
+```
+
+#### Zur überwachung
+
+```bash
+docker stats
+```
+
+#### Neustarts begrenzen
+
+```bash
+docker run -d --restart=on-failure:10 image
+```
+
+#### Read-Only Dateisystem
+
+```bash
+docker run --read-only image
+```
+
+#### Capabilities einsachränken
+
+```bash
+docker run --cap-drop all --cap-ad CHOWN image
+```
+
+#### ulimits setzen
+
+```bash
+docker run --ulimit cpu=12:14 image
+```
+
+---
+
+### Organisatorische Sicherheit
+- Container in seperater VM oder dediziertem Host erstellen
+- Nur Reverse-Proxy öffnet exteren Ports
+- Regelmässige Updates
+
+---
+
+## Kontinuierliche Integration
+
+### Ziel
+- Automatisches Bauen und Testen von Software
+- Fehler früh erkennen
+- Qualitätsteigerung
+
+---
+
+### Grundsätze
+- Codebasis
+- Automatisierte Builds
+- Automatisierte Tests
+- Häufige integration
+- Kurze Testzyklen
+
+---
+
+### Jenkins und Blue Ocean
+- Jenkins = Open Source Server
+- Blue Ocean = moderneres Jenkins
+- Pipeline wird im Repository definiert (Jenkinsfile)
+- Docker-Images können automatisch gebaut werden
+
