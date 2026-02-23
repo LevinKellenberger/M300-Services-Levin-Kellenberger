@@ -1261,3 +1261,35 @@ docker run --ulimit cpu=12:14 image
 - Pipeline wird im Repository definiert (Jenkinsfile)
 - Docker-Images können automatisch gebaut werden
 
+---
+
+# 40-Kubernetes Fragen.md
+
+## Kubernetes
+
+### Was ist Kubernetes?
+- Die zurzeit populärste Conrainer-Lösung. 
+
+### Was ist die Hauptaufgabe von Kubernetes?
+- Verwaltung von Container innerhalb eines Clusters.
+
+### Wer ist der Eigentümer von Kubernetes
+- Kubernetes ist mittlerweile bei der Cloud Native Computing Foundation gehostet
+
+### Was für eine Netzwerkstruktur verwendet Kubernetes?
+- Kubernetes verwendet eine flache Netzwerkstruktur. Jeder Container kann mit jedem ohne NAT kommunizieren. 
+
+### Über was Kommunizieren die Services?
+- Über ein Overlay Netzwerk, welches auf jeden Container im Subnet zugriff hat. 
+
+---
+
+## Objekte (Ressourcen) 
+
+### Kubernetes Objekte (Ressourcen) werden in welchem Dateiformat beschrieben?
+- Kubernetes Objekte werden in YAML beschrieben.
+
+### Kubernetes Objekte (Ressourcen) können mittels Dashboard und welchem CLI Tool verwaltet werden?
+- Kubernetes Objekte können mit dem Dashboard und kubectl verwaltet werden.
+
+### 
