@@ -1412,6 +1412,36 @@ Fungiert als Reverse Proxy und ermöglicht den Zugriff auf Services via URL.
 
 # 40-Kubernetes KS8.md
 
+## Kubernetes Setup
+- In den Docker-Settings-->Kubernetes, Kubernetes aktivieren
+
+![Kubernetes-Aktivieren](images/40-Kubernetes-Kubernetes-Aktivieren.png)
+
+- Danach im Terminal testen, ob es installiert ist
+
+```bash
+Kubectl version
+```
+- Namespace erstellen und testen
+
+![Namespace](Images/40-Kubernetes-Namespace.png)
+
+- Apache Webserver installieren und testen
+
+![Apache](Images/40-Kubernetes-Apache.png)
+
+- Service erstellen
+
+![Service](Images/40-Kubernetes-Service.png)
+
+- Port herausfinden
+
+![Port](Images/40-Kubernetes-Port.png)
+
+
+
+
+
 
 
 # 50-Minecraft Server mit Dashboard
