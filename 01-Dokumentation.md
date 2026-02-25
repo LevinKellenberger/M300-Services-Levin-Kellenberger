@@ -1,4 +1,4 @@
-# Dokuemntation M300 Levin Kellenberger
+# Dokumentation M300 Levin Kellenberger
 
 # Inhaltsverzeichnis
 - [10 Toolumgebung](#10-tooleumgebung)
