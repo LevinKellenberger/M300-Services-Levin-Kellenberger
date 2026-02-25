@@ -1,4 +1,4 @@
-# Dokuemntation M300 Levin Kellenberger
+# Dokumentation M300 Levin Kellenberger
 
 # Inhaltsverzeichnis
 - [10 Toolumgebung](#10-tooleumgebung)
@@ -2187,4 +2187,7 @@ networks:
 
 # The END
 ![The END](Images/THE%20END.png)
+<<<<<<< HEAD
 
+=======
+>>>>>>> 31dd491a0342f83030d8d8c32969beb9f3802c32
