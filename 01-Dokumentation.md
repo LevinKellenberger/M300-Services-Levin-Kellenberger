@@ -19,6 +19,7 @@
 - [40 Kubernetes](#40-kubernetes)
   - [40 Kubernetes Fragen](#40-kubernetes-fragenmd)
   - [40 Kubernetes README](#40-kubernetes-readmemd)
+  - [40 Kubernetes KS8](#40-Kubernetes-KS8md)
 - [50 Minecraft Server mit Dashboard](#50-minecraft-server-mit-dashboard)
 
 # 10-Toolumgebung
@@ -961,7 +962,6 @@ nano Dockerfile
 FROM ubuntu:14.04
 RUN apt-get update
 RUN apt-get -q -y install apache2 
-# Konfiguration Apache
 ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data
 ENV APACHE_LOG_DIR /var/log/apache2
@@ -1322,13 +1322,98 @@ docker run --ulimit cpu=12:14 image
 ### Kubernetes Objekte (Ressourcen) können mittels Dashboard und welchem CLI Tool verwaltet werden?
 - Kubernetes Objekte können mit dem Dashboard und kubectl verwaltet werden.
 
-### 
+### Mit was lassen sich Kubernetes Objekte (Ressourcen) gruppieren?
+- Mit Labels
 
+### Was sind Pods?
+- Kleine Gruppen von Containern
 
+### Was sind Services?
+- Eine Gruppe von Pods
 
+### Was sind Namespaces?
+- Sie unterteilen Cluster in partitionen
+  
+### Was ist die Aufgabe eines ReplicaSets?
+- Stellen sicher das Pods laufen
+
+### Für was können Deployments verwendet werden?
+- Ermöglichen Updates für Pods-Images
 
 ---
+
 # 40-Kuberntes README.md
+
+## Grundbegriffe 
+- Prozess zur Bereistellung von Verbindungsinformationen (IP+Port) für Clients
+- Einfach in Statischen Systemen mit nur einer Instanz, komplexer in verteiltensystemen
+- Zugriff über Servicenamen
+### Erweiterte Funktionen sind
+- Healthcheking
+- Failover
+- Verschlüsselung
+- Isolation
+
+## Load-Balancing
+- Verteilung auf mehrere Systeme
+- Wichtig bei Webserver
+- Verteilung auf mehrere Container
+
+## Cluster
+- Gruppe vernetzter Computer
+- Erhöhung der Rechenleistung
+- Erhöhung der Verfügbarkeit
+- Serverfarm
+
+## Kubernetes
+### Allgemeines
+#### Definition
+Open-Source-System zum Automatisieren von Bereitstellungen, Skalierung und Verwaltung von Container Anwendungen.  
+ 
+#### Ursprung
+Ursprünglich von Google jetzt von Cloud Native Computing Foundation.  
+ 
+#### Support
+Unterstützt verschiedene Container Tools und Cloud Plattformen.  
+ 
+### Merkmale
+#### Immutable Infrastructure:
+Unveränderliche statt veränderlichen Systeme.  
+ 
+#### Deklarativ:
+Zielzustand wird definiert, nicht die einzelnen Ausführungsschritte.  
+ 
+#### Self Healing:
+Automatische Neustarts bei Abstürzen.  
+ 
+#### Skalierbarkeit:
+Anpassung der Instanzzahl durch einfache Änderung der Deklaration.  
+ 
+#### Abstraktion:
+Denken in Anwendungen und Services statt in physischen Rechnern oder technischer Infrastruktur.  
+ 
+### Objekte
+#### Pod:
+Kleinste Einheit; Gruppe von Containern und Volumes in einer gemeinsamen Umgebung.  
+ 
+#### ReplicaSet:
+Garantiert, dass die definierte Anzahl an Pod-Kopien dauerhaft läuft.  
+ 
+#### Deployment:
+Erlaubt deklarierte Updates von Pods.  
+ 
+#### Service:
+Bietet stabilen Zugriff auf Pods auch wenn diese ersetzt werden.  
+ 
+#### Ingress:
+Fungiert als Reverse Proxy und ermöglicht den Zugriff auf Services via URL.  
+
+---
+
+# 40-Kubernetes KS8.md
+
+
+
 # 50-Minecraft Server mit Dashboard
 
 ## Ziel des Projektes
