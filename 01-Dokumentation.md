@@ -1,25 +1,24 @@
 # Dokuemntation M300 Levin Kellenberger
 
 # Inhaltsverzeichnis
-
 - [10 Toolumgebung](#10-tooleumgebung)
 - [20 Infrastruktur](#20-infrastruktur)
-  - [20 Infrastruktur – README](#20-infrastruktur--readme)
-  - [20 Infrastruktur – Fragen](#20-infrastruktur--fragen)
-  - [20 LB2](#20-lb2)
+  - [20 Infrastruktur Fragen](#20-infrastruktur-fragenmd)
+  - [20 Infrastruktur README](#20-infrastruktur-readmemd)
+  - [20 LB2](#20-lb2md)
 - [25 Sicherheit](#25-sicherheit)
-  - [25 Sicherheit – README](#25-sicherheit--readme)
-  - [25 Sicherheit – Fragen](#25-sicherheit--fragen)
+  - [25 Sicherheit Fragen](#25-sicherheit-fragenmd)
+  - [25 Sicherheit README](#25-sicherheit-readmemd)
 - [30 Container](#30-container)
-  - [30 Container – README](#30-container--readme)
-  - [30 Container – Fragen](#30-container--fragen)
-  - [30 LB3](#30-lb3)
+  - [30 Container Fragen](#30-container-fragenmd)
+  - [30 Container README](#30-container-readmemd)
+  - [30 LB3](#30-lb3md)
 - [35 Sicherheit](#35-sicherheit)
-  - [35 Sicherheit – README](#35-sicherheit--readme)
-  - [35 Sicherheit – Fragen](#35-sicherheit--fragen)
+  - [35 Sicherheit Fragen](#35-sicherheit-fragenmd)
+  - [35 Sicherheit README](#35-sicherheit-readmemd)
 - [40 Kubernetes](#40-kubernetes)
-  - [40 Kubernetes – README](#40-kubernetes--readme)
-  - [40 Kubernetes – Fragen](#40-kubernetes--fragen)
+  - [40 Kubernetes Fragen](#40-kubernetes-fragenmd)
+  - [40 Kubernetes README](#40-kubernetes-readmemd)
 - [50 Minecraft Server mit Dashboard](#50-minecraft-server-mit-dashboard)
 
 # 10-Toolumgebung
