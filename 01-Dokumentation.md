@@ -1293,3 +1293,865 @@ docker run --ulimit cpu=12:14 image
 - Kubernetes Objekte können mit dem Dashboard und kubectl verwaltet werden.
 
 ### 
+
+
+
+
+---
+
+# 50-Minecraft Server mit Dashboard
+
+## Ziel des Projektes
+- Das Ziel des Projektes ist es, ein funktionsfähigen Minecraft server aufzusetzten, dazu eine Website, die Metrik-Daten der Container und des Minecrafts-Server anzeigen. 
+
+## Dockerfiles erstellen
+- Ordnerstruktur für den Server und das Dashboard aufsetzten
+
+![Ordnerstruktur](Images/50-Projekt-Ordnerstruktur.png)
+
+- Dcokerfile im Ordner mcstack erstellen
+
+![Dockercompose](Images/50-Projekt-Dockercompose.png)
+
+- Mit folgendem Befühlen
+
+```bash
+services:
+  minecraft:
+    image: itzg/minecraft-server:latest
+    container_name: minecraft
+    environment:
+      EULA: "TRUE"
+      TYPE: "PAPER"         
+      VERSION: "1.21.10"     
+      MEMORY: "2G"
+      MOTD: "ServerPlus (Docker)"
+      ENABLE_RCON: "true"
+      RCON_PASSWORD: "changeme_rcon"
+    ports:
+      - "25565:25565"        
+      - "25575:25575"        
+    volumes:
+      - ./minecraft-data:/data
+    restart: unless-stopped
+    networks:
+      - backend
+  status-app:
+    build: ./status-app
+    container_name: status-app
+    environment:
+      MC_HOST: "minecraft"
+      MC_PORT: "25565"
+    depends_on:
+      - minecraft
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    networks:
+      - backend
+  web:
+    image: nginx:alpine
+    container_name: web
+    depends_on:
+      - status-app
+      - grafana
+    ports:
+      - "80:80"
+    volumes:
+      - ./web/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./web/site:/usr/share/nginx/html:ro
+    restart: unless-stopped
+    networks:
+      - backend
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+    networks:
+      - backend
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    privileged: true
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - "8081:8080"
+    restart: unless-stopped
+    networks:
+      - backend
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./monitoring/grafana:/var/lib/grafana
+    restart: unless-stopped
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+```
+
+- Dockerfile im Ordner status-app erstellen
+
+![Dockerfile](Images/50-Projekt-Status-app-Dockerfile.png)
+
+- Folgenden Code einsetzten
+
+```bash
+FROM python:3.12-slim
+
+WORKDIR /app
+RUN pip install --no-cache-dir flask mcstatus
+
+COPY app.py /app/app.py
+EXPOSE 8080
+
+CMD ["python", "app.py"]
+```
+
+- Im Ordner status-app das app-python file erstellen
+
+![Python-App](Images/50-Projekt-Python-App.png)
+
+- Mit folgendem Inhalt
+
+```bash
+import os
+from flask import Flask, jsonify
+from mcstatus import JavaServer
+
+app = Flask(__name__)
+
+MC_HOST = os.getenv("MC_HOST", "minecraft")
+MC_PORT = int(os.getenv("MC_PORT", "25565"))
+
+@app.get("/api/status")
+def status():
+    try:
+        server = JavaServer.lookup(f"{MC_HOST}:{MC_PORT}")
+        status = server.status()
+        return jsonify({
+            "online": True,
+            "latency_ms": status.latency,
+            "players_online": status.players.online,
+            "players_max": status.players.max,
+            "version": status.version.name,
+            "motd": getattr(status.description, "to_plain", lambda: str(status.description))()
+        })
+    except Exception as e:
+        return jsonify({"online": False, "error": str(e)}), 503
+
+@app.get("/")
+def home():
+     return """
+    <h2>Minecraft Server Status</h2>
+    <p>Endpoint: <code>/api/status</code></p>
+    <p>Tip: Open <code>/api/status</code> in browser.</p>
+    """
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080)
+```
+
+- Im Ordner web, das nginx.config file erstellen
+
+![nginx.config](Images/50-Projekt-nginx.png)
+
+- Mit folgendem Inhalt
+
+```bash
+server {
+  listen 80;
+
+  location / {
+    root /usr/share/nginx/html;
+    index index.html;
+  }
+
+  location /status/ {
+    proxy_pass http://status-app:8080/;
+  }
+
+  location /grafana/ {
+    proxy_pass http://grafana:3000/;
+  }
+}
+```
+
+- Im Ordner Web/Site das Index.html file erstellen
+
+![Index](Images/50-Projekt-Index.png)
+
+- Mit folgendem Inhalt
+
+```bash
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>ServerPlus Dashboard</title>
+</head>
+<body>
+  <h1>ServerPlus Dashboard</h1>
+
+  <ul>
+    <li><a href="/status/api/status" target="_blank">Minecraft Status (API)</a></li>
+    <li><a href="/grafana/" target="_blank">Grafana</a></li>
+    <li><a href="http://localhost:9090" target="_blank">Prometheus</a></li>
+    <li><a href="http://localhost:8081" target="_blank">cAdvisor</a></li>
+  </ul>
+
+  <h3>Quick Check</h3>
+  <pre id="out">Loading...</pre>
+
+  <script>
+    fetch("/status/api/status")
+      .then(r => r.json())
+      .then(d => { document.getElementById("out").textContent = JSON.stringify(d, null, 2); })
+      .catch(e => { document.getElementById("out").textContent = "Error: " + e; });
+  </script>
+</body>
+</html>
+```
+
+- Unter Monitoring/Prometheus das prometheus.yml erstellen
+
+![prometheus](images/50-Projekt-prometheus.png)
+
+- Mit folgendem Inhalt
+
+```bash
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: "cadvisor"
+    static_configs:
+      - targets: ["cadvisor:8080"]
+
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["prometheus:9090"]
+```
+
+---
+
+## Docker erstellen
+- Im Ordner mc-stack den Befehl zum starten der Docker ausführen
+
+```bash
+docker compose up -d --build
+```
+
+![Docker-up](Images/50-docker-up.png)
+
+- Alle Container sollten laufen
+
+![Container](images/50-Projekt-Container.png)
+
+
+
+
+## Dashboards und Monitoring
+
+### Auf der Startseite kann man folgend Informationen sehen
+- Spieler Online/Max
+- Latenz/Ping
+- Version
+- Quick Check
+- Links zu dem Grafana Dashboards, Prometheus um Queris zu ertsellen oder cAadvisior um die Container zum Monitoren
+
+![Localhost](Images/50-Projekt-Localhost.png)
+
+
+### Grafana Dashboards
+- Auf der Grafana Seite kann man Dashboards zur Minecrfat-Welt erstellen, wie z.B Player-Online in jeder Dimension oder Anzahl Spieler die auf dem Server spielen
+
+![Grafana](Images/50-Projekt-Grafana.png)
+
+#### Neus Item erstellen
+- Neue  Visualization hinzufügen
+- Unter Metric das Item auswählen, z.B mc_player_online_total
+- Auf der rechten Seite kann man diverse anpassungen am Graphen machen
+
+![Visualization](Images/50-Projekt-Visualization.png)
+
+### cAdvisor
+- Auf cAdvisor sieht man Monitoring von den Container aus Docker
+![cAdvisor](images/50-Projekt-cAdvisor.png)
+
+- Verlauf von CPU-Usages
+![cAdvisor_Verlauf](Images/50-Projekt.cAdvisor-Verlauf.png)
+
+
+### Prometheus
+- Auf der Seite von Prometheus kann man einzelne Abfragen (Querys) machen
+
+![Prometheus-query](Images/50-Projekt-prometheus-querys.png)
+
+- Es dient ausserdem als Verbindung zwischen den Containern und cAdvisor oder Grafana
+- Prometheus hat diese als Targets hinterlegt und liefert Daten
+
+![Prometheus-targets](Images/50-Projekt-Prometheus-targets.png)
+
+## Fehleranalyse und Verbesserung
+
+### Überprüfung der Container nach docker compose up
+
+- Container status prüfen mit 
+
+```bash
+docker ps
+```
+
+- Kontrolliert habe ich, dass alle Container auf dem richtigen Port laufen
+
+![Docker-ps](Images/50-Projekt-docker-ps.png)
+
+### Integration vom Minecraft-Ingame Metriken
+- Nach dem ersten Starten der Container konnte ich nur Metriken der Container und nicht von dem Minecraft-Server, d.H Ich konnte keine player-Online, player-stats etc auslesen. 
+
+- Dafür musste ich unter den Minecraft-Plugins das prometheus-export plugin installieren, diese plugin exportiert ingame-daten in prometheus, siehe scirpt
+
+```bash
+host: 0.0.0.0
+port: 9940
+
+enable_metrics:
+  entities_total: true
+  villagers_total: true
+  loaded_chunks_total: true
+  jvm_memory: true
+  players_online_total: true
+  players_total: true
+  whitelisted_players: true
+  tps: true
+  world_size: true
+  jvm_threads: true
+  jvm_gc: true
+  tick_duration_median: true
+  tick_duration_average: true
+  tick_duration_min: true
+  tick_duration_max: true
+  player_online: true
+  player_statistic: true
+  player_health: true
+  player_hunger: true
+  player_experience: true
+  player_location: true
+  player_ping: true
+  player_gamemode: true
+  player_world: true
+  player_dimension: true
+  player_status_effects: true
+  player_inventory: true
+  player_armor: true
+  player_held_item: true
+  player_scoreboard: true
+  player_advancements: true
+  player_achievements: true
+  player_ender_chest: true
+  player_potion_effects: true
+  player_statistics: true
+  player_vehicles: true
+  player_experience_levels: true
+  player_food_level: true
+  player_saturation: true
+  player_exhaustion: true
+  player_air: true
+  player_fire_ticks: true
+  player_fall_distance: true
+  player_total_experience: true
+  player_total_experience_levels: true
+  player_total_experience_progress: true
+  player_total_experience_progress_percentage: true
+  ```
+
+- Server neustarten, Minecraft wird jetzt in Promethues unter den Targets angezeigt und es werdne die oben beschrieben Daten ausgelesen
+
+![Prometheus-targets](Images/50-Projekt-Prometheus-targets.png)
+
+### Port 9940 freigeben
+- Der port war nicht erreichbar, weil er im docker-compose.yml nicht konfiguriert wird. Somit konnten keine Daten an Prometheus gesendet werden. 
+
+```bash
+services:
+  minecraft:
+    image: itzg/minecraft-server:latest
+    container_name: minecraft
+    environment:
+      EULA: "TRUE"
+      TYPE: "PAPER"
+      VERSION: "1.21.10"
+      MEMORY: "2G"
+      MOTD: "ServerPlus (Docker)"
+      ENABLE_RCON: "true"
+      RCON_PASSWORD: "changeme_rcon"
+    ports:
+      - "25565:25565"
+      - "25575:25575"
+      - "9940:9940"
+    volumes:
+      - ./minecraft-data:/data
+    restart: unless-stopped
+    networks:
+      - backend
+
+  status-app:
+    build: ./status-app
+    container_name: status-app
+    environment:
+      MC_HOST: "minecraft"
+      MC_PORT: "25565"
+    depends_on:
+      - minecraft
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    networks:
+      - backend
+
+  web:
+    image: nginx:alpine
+    container_name: web
+    depends_on:
+      - status-app
+      - grafana
+    ports:
+      - "80:80"
+    volumes:
+      - ./web/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./web/site:/usr/share/nginx/html:ro
+    restart: unless-stopped
+    networks:
+      - backend
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+    networks:
+      - backend
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    privileged: true
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - "8081:8080"
+    restart: unless-stopped
+    networks:
+      - backend
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./monitoring/grafana:/var/lib/grafana
+    restart: unless-stopped
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+```
+
+- Unter Minecraft:Services:Ports wurden der Port 9940 hinzugefügt
+
+
+### Website-Design anpassen
+- Ich habe das Design der Startseite angepasst, dazu musste ich folgenden Inhalt in das index.html einfügen
+
+```bash
+<!doctype html>
+<html lang="de">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ServerPlus Dashboard</title>
+    <style>
+        :root {
+            --bg: #0b1220;
+            --panel: rgba(255, 255, 255, 0.06);
+            --panel2: rgba(255, 255, 255, 0.08);
+            --text: rgba(255, 255, 255, 0.92);
+            --muted: rgba(255, 255, 255, 0.65);
+            --border: rgba(255, 255, 255, 0.12);
+            --ok: #20c997;
+            --bad: #ff6b6b;
+            --warn: #ffd43b;
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+            --radius: 18px;
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--sans);
+            color: var(--text);
+            background:
+                radial-gradient(1200px 600px at 20% 10%, rgba(32, 201, 151, 0.18), transparent 60%),
+                radial-gradient(1000px 520px at 80% 20%, rgba(99, 102, 241, 0.20), transparent 60%),
+                radial-gradient(900px 520px at 50% 90%, rgba(255, 212, 59, 0.10), transparent 60%),
+                var(--bg);
+        }
+
+        .wrap {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 32px 18px 56px;
+        }
+
+        header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .brand {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(32, 201, 151, 0.9), rgba(99, 102, 241, 0.85));
+            border: 1px solid rgba(255, 255, 255, 0.16);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 28px
+        }
+
+        .sub {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 14px
+        }
+
+        .pillbar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .pill {
+            padding: 10px 12px;
+            border-radius: 999px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            min-width: 210px;
+            justify-content: space-between;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--warn);
+        }
+
+        .dot.ok {
+            background: var(--ok);
+        }
+
+        .dot.bad {
+            background: var(--bad);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 16px;
+            margin-top: 14px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .card .hd {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .card .bd {
+            padding: 14px 16px
+        }
+
+        .links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        a.tile {
+            text-decoration: none;
+            color: var(--text);
+            background: var(--panel2);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .tile .name {
+            font-weight: 600
+        }
+
+        .tile .desc {
+            color: var(--muted);
+            font-size: 12.5px;
+            margin-top: 2px
+        }
+
+        pre {
+            margin: 0;
+            padding: 14px;
+            border-radius: 14px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: var(--mono);
+            font-size: 12.5px;
+            overflow: auto;
+            max-height: 340px;
+        }
+
+        button {
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text);
+            padding: 10px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .kvs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .kv {
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .k {
+            color: var(--muted);
+            font-size: 12px
+        }
+
+        .v {
+            margin-top: 4px;
+            font-weight: 700
+        }
+
+        footer {
+            margin-top: 16px;
+            color: var(--muted);
+            font-size: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+
+        <header>
+            <div class="brand">
+                <div class="logo"></div>
+                <div>
+                    <h1>ServerPlus Dashboard</h1>
+                    <p class="sub">Minecraft • Monitoring • Web Dashboard</p>
+                </div>
+            </div>
+
+            <div class="pillbar">
+                <div class="pill">
+                    <span><b>Status</b></span>
+                    <span class="dot" id="statusDot"></span>
+                </div>
+                <div class="pill">
+                    <span><b>Letztes Update</b></span>
+                    <span id="lastUpdate">—</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid">
+
+            <section class="card">
+                <div class="hd">
+                    <h2>Links</h2>
+                </div>
+                <div class="bd">
+                    <div class="links">
+                        <a class="tile" href="http://localhost:3000" target="_blank">
+                            <div>
+                                <div class="name">Grafana</div>
+                                <div class="desc">Dashboards</div>
+                            </div>
+                        </a>
+
+                        <a class="tile" href="http://localhost:9090" target="_blank">
+                            <div>
+                                <div class="name">Prometheus</div>
+                                <div class="desc">Metriken</div>
+                            </div>
+                        </a>
+
+                        <a class="tile" href="http://localhost:8081" target="_blank">
+                            <div>
+                                <div class="name">cAdvisor</div>
+                                <div class="desc">Container Monitoring</div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="kvs">
+                        <div class="kv">
+                            <div class="k">Spieler</div>
+                            <div class="v" id="players">—</div>
+                        </div>
+                        <div class="kv">
+                            <div class="k">Latenz</div>
+                            <div class="v" id="latency">—</div>
+                        </div>
+                        <div class="kv">
+                            <div class="k">Version</div>
+                            <div class="v" id="version">—</div>
+                        </div>
+                        <div class="kv">
+                            <div class="k">MOTD</div>
+                            <div class="v" id="motd">—</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="hd">
+                    <h2>Quick Check</h2>
+                </div>
+                <div class="bd">
+                    <pre id="out">Loading…</pre>
+                </div>
+            </section>
+
+        </div>
+
+        <footer>
+            ServerPlus • <span id="footTime">—</span>
+        </footer>
+
+    </div>
+
+    <script>
+        const out = document.getElementById("out");
+        const dot = document.getElementById("statusDot");
+        const lastUpdate = document.getElementById("lastUpdate");
+        const footTime = document.getElementById("footTime");
+        const players = document.getElementById("players");
+        const latency = document.getElementById("latency");
+        const version = document.getElementById("version");
+        const motd = document.getElementById("motd");
+
+        function setDot(state) {
+            dot.classList.remove("ok", "bad");
+            if (state === "ok") dot.classList.add("ok");
+            else if (state === "bad") dot.classList.add("bad");
+        }
+
+        function fmtTime(d) {
+            return d.toLocaleString(undefined, { hour12: false });
+        }
+
+        async function loadStatus() {
+            try {
+                const r = await fetch("/status/api/status", { cache: "no-store" });
+                const d = await r.json();
+                out.textContent = JSON.stringify(d, null, 2);
+                const now = new Date();
+                footTime.textContent = fmtTime(now);
+                lastUpdate.textContent = fmtTime(now);
+
+                if (d.online) {
+                    setDot("ok");
+                    players.textContent = `${d.players_online} / ${d.players_max}`;
+                    latency.textContent = `${Math.round(d.latency_ms)} ms`;
+                    version.textContent = d.version || "—";
+                    motd.textContent = d.motd || "—";
+                } else {
+                    setDot("bad");
+                    players.textContent = "—";
+                    latency.textContent = "—";
+                    version.textContent = "—";
+                    motd.textContent = "offline";
+                }
+            } catch (e) {
+                setDot("bad");
+                out.textContent = "Error: " + e;
+            }
+        }
+
+        loadStatus();
+        setInterval(loadStatus, 15000);
+    </script>
+</body>
+
+</html>
+```
+
